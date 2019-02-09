@@ -10,6 +10,12 @@
 FILE* infile = NULL;
 FILE* outfile = NULL;
 
+typedef struct labelTable{
+    int offset;
+    char* label;
+} labelTable;
+
+
 enum
 {
     DONE, OK, EMPTY_LINE
@@ -18,7 +24,7 @@ enum
 int toNum( char* pStr);
 int readAndParse( FILE * pInfile, char * pLine, char ** pLabel, char ** pOpcode,
                   char ** pArg1, char ** pArg2, char ** pArg3, char ** pArg4);
-void buildLabelTable(FILE * pInfile, char** labelTable[]);
+void buildLabelTable(FILE * lInfile, labelTable labels[]);
 
 int main(int argc, char* argv[]) {
 
@@ -34,8 +40,8 @@ int main(int argc, char* argv[]) {
         printf("Error: Cannot open file %s\n", argv[2]);
         exit(4);
     }
-    char **labelTable[MAX_LINE_LENGTH];
-    buildLabelTable(infile, labelTable);
+    labelTable labels[MAX_LINE_LENGTH];
+    buildLabelTable(infile, labels);
 
 
 
@@ -112,88 +118,88 @@ int toNum( char * pStr ) {
 }
 int isOpcode(char *lptr) {
     //check to see if it is an opcode...
-    if(strcmp(lptr,"add")){
+    if(0==strcmp(lptr,"add")){
         return -1;
     }
-    if(strcmp(lptr,"and")){
+    if(0==strcmp(lptr,"and")){
         return -1;
     }
-    if(strcmp(lptr,"br")){
+    if(0==strcmp(lptr,"br")){
         return -1;
     }
-    if(strcmp(lptr,"brn")){
+    if(0==strcmp(lptr,"brn")){
         return -1;
     }
-    if(strcmp(lptr,"brz")){
+    if(0==strcmp(lptr,"brz")){
         return -1;
     }
-    if(strcmp(lptr,"brp")){
+    if(0==strcmp(lptr,"brp")){
         return -1;
     }
-    if(strcmp(lptr,"brnz")){
+    if(0==strcmp(lptr,"brnz")){
         return -1;
     }
-    if(strcmp(lptr,"brzp")){
+    if(0==strcmp(lptr,"brzp")){
         return -1;
     }
-    if(strcmp(lptr,"brnp")){
+    if(0==strcmp(lptr,"brnp")){
         return -1;
     }
-    if(strcmp(lptr,"brnzp")){
+    if(0==strcmp(lptr,"brnzp")){
         return -1;
     }
-    if(strcmp(lptr,"halt")){
+    if(0==strcmp(lptr,"halt")){
         return -1;
     }
-    if(strcmp(lptr,"jmp")){
+    if(0==strcmp(lptr,"jmp")){
         return -1;
     }
-    if(strcmp(lptr,"jsr")){
+    if(0==strcmp(lptr,"jsr")){
         return -1;
     }
-    if(strcmp(lptr,"jsrr")){
+    if(0==strcmp(lptr,"jsrr")){
         return -1;
     }
-    if(strcmp(lptr,"ldb")){
+    if(0==strcmp(lptr,"ldb")){
         return -1;
     }
-    if(strcmp(lptr,"ldw")){
+    if(0==strcmp(lptr,"ldw")){
         return -1;
     }
-    if(strcmp(lptr,"lea")){
+    if(0==strcmp(lptr,"lea")){
         return -1;
     }
-    if(strcmp(lptr,"nop")){
+    if(0==strcmp(lptr,"nop")){
         return -1;
     }
-    if(strcmp(lptr,"not")){
+    if(0==strcmp(lptr,"not")){
         return -1;
     }
-    if(strcmp(lptr,"ret")){
+    if(0==strcmp(lptr,"ret")){
         return -1;
     }
-    if(strcmp(lptr,"lshf")){
+    if(0==strcmp(lptr,"lshf")){
         return -1;
     }
-    if(strcmp(lptr,"rshfl")){
+    if(0==strcmp(lptr,"rshfl")){
         return -1;
     }
-    if(strcmp(lptr,"rshfa")){
+    if(0==strcmp(lptr,"rshfa")){
         return -1;
     }
-    if(strcmp(lptr,"rti")){
+    if(0==strcmp(lptr,"rti")){
         return -1;
     }
-    if(strcmp(lptr,"stb")){
+    if(0==strcmp(lptr,"stb")){
         return -1;
     }
-    if(strcmp(lptr,"stw")){
+    if(0==strcmp(lptr,"stw")){
         return -1;
     }
-    if(strcmp(lptr,"trap")){
+    if(0==strcmp(lptr,"trap")){
         return -1;
     }
-    if(strcmp(lptr,"xor")){
+    if(0==strcmp(lptr,"xor")){
         return -1;
     }
     return 0;
@@ -251,12 +257,12 @@ int readAndParse( FILE * pInfile, char * pLine, char ** pLabel, char
 
 }
 
-void buildLabelTable(FILE * lInfile, char** labelTable[])
-{
+void buildLabelTable(FILE * lInfile, labelTable labels[]) {
     char lLine[MAX_LINE_LENGTH + 1], *lLabel, *lOpcode, *lArg1,
             *lArg2, *lArg3, *lArg4;
 
     int lRet;
+    int originOffset;
 
     //lInfile = fopen( "data.in", "r" );	/* open the input file */
 
@@ -266,7 +272,9 @@ void buildLabelTable(FILE * lInfile, char** labelTable[])
                              &lOpcode, &lArg1, &lArg2, &lArg3, &lArg4 );
         if( lRet != DONE && lRet != EMPTY_LINE )
         {
+            if(lLabel!=0){
 
+            }
         }
     } while( lRet != DONE );
 }
