@@ -1,0 +1,10 @@
+Will happen in 2 passes of the program
+Step 1: Make label table on first pass
+    AGAIN   x305A
+    NUMBER  x3062
+    SIX     x3064
+
+For the offsets, make sure to remember the left shift that happens in execution, so right shift in compilation.
+Remember to just read the lab document. In the printf, use something like: %40x.
+Mask off lower 16 bits so the sign extension happens correctly.
+
