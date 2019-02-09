@@ -10,11 +10,12 @@
 FILE* infile = NULL;
 FILE* outfile = NULL;
 
+int labelTableLength = 0;
 typedef struct labelTable{
     int offset;
     char* label;
 } labelTable;
-
+labelTable labels[MAX_LINE_LENGTH];
 
 enum
 {
@@ -22,12 +23,18 @@ enum
 };
 
 int toNum( char* pStr);
+
 int readAndParse( FILE * pInfile, char * pLine, char ** pLabel, char ** pOpcode,
                   char ** pArg1, char ** pArg2, char ** pArg3, char ** pArg4);
-void buildLabelTable(FILE * lInfile, labelTable labels[]);
+void buildLabelTable(FILE * lInfile);
+
+
 
 int main(int argc, char* argv[]) {
-
+    for(int i =0;i<MAX_LINE_LENGTH;i++){
+        labels[i].label = (char *) malloc(20);
+        labels[i].offset = 0;
+    }
     /* open the source file */
     infile = fopen(argv[1], "r");
     outfile = fopen(argv[2], "w");
@@ -40,9 +47,11 @@ int main(int argc, char* argv[]) {
         printf("Error: Cannot open file %s\n", argv[2]);
         exit(4);
     }
-    labelTable labels[MAX_LINE_LENGTH];
-    buildLabelTable(infile, labels);
-
+    //labelTable labels[MAX_LINE_LENGTH] ;
+    buildLabelTable(infile);
+    for(int i =0;i<labelTableLength;i++){
+        printf("Label is: %s with offset %x\n",labels[i].label,labels[i].offset);
+    }
 
 
 
@@ -51,6 +60,8 @@ int main(int argc, char* argv[]) {
     fclose(infile);
     fclose(outfile);
 }
+
+
 
 int toNum( char * pStr ) {
     char * t_ptr;
@@ -119,90 +130,90 @@ int toNum( char * pStr ) {
 int isOpcode(char *lptr) {
     //check to see if it is an opcode...
     if(0==strcmp(lptr,"add")){
-        return -1;
+        return 0;
     }
     if(0==strcmp(lptr,"and")){
-        return -1;
+        return 0;
     }
     if(0==strcmp(lptr,"br")){
-        return -1;
+        return 0;
     }
     if(0==strcmp(lptr,"brn")){
-        return -1;
+        return 0;
     }
     if(0==strcmp(lptr,"brz")){
-        return -1;
+        return 0;
     }
     if(0==strcmp(lptr,"brp")){
-        return -1;
+        return 0;
     }
     if(0==strcmp(lptr,"brnz")){
-        return -1;
+        return 0;
     }
     if(0==strcmp(lptr,"brzp")){
-        return -1;
+        return 0;
     }
     if(0==strcmp(lptr,"brnp")){
-        return -1;
+        return 0;
     }
     if(0==strcmp(lptr,"brnzp")){
-        return -1;
+        return 0;
     }
     if(0==strcmp(lptr,"halt")){
-        return -1;
+        return 0;
     }
     if(0==strcmp(lptr,"jmp")){
-        return -1;
+        return 0;
     }
     if(0==strcmp(lptr,"jsr")){
-        return -1;
+        return 0;
     }
     if(0==strcmp(lptr,"jsrr")){
-        return -1;
+        return 0;
     }
     if(0==strcmp(lptr,"ldb")){
-        return -1;
+        return 0;
     }
     if(0==strcmp(lptr,"ldw")){
-        return -1;
+        return 0;
     }
     if(0==strcmp(lptr,"lea")){
-        return -1;
+        return 0;
     }
     if(0==strcmp(lptr,"nop")){
-        return -1;
+        return 0;
     }
     if(0==strcmp(lptr,"not")){
-        return -1;
+        return 0;
     }
     if(0==strcmp(lptr,"ret")){
-        return -1;
+        return 0;
     }
     if(0==strcmp(lptr,"lshf")){
-        return -1;
+        return 0;
     }
     if(0==strcmp(lptr,"rshfl")){
-        return -1;
+        return 0;
     }
     if(0==strcmp(lptr,"rshfa")){
-        return -1;
+        return 0;
     }
     if(0==strcmp(lptr,"rti")){
-        return -1;
+        return -0;
     }
     if(0==strcmp(lptr,"stb")){
-        return -1;
+        return 0;
     }
     if(0==strcmp(lptr,"stw")){
-        return -1;
+        return 0;
     }
     if(0==strcmp(lptr,"trap")){
-        return -1;
+        return 0;
     }
     if(0==strcmp(lptr,"xor")){
-        return -1;
+        return 0;
     }
-    return 0;
+    return -1;
 }
 
 int readAndParse( FILE * pInfile, char * pLine, char ** pLabel, char
@@ -257,25 +268,40 @@ int readAndParse( FILE * pInfile, char * pLine, char ** pLabel, char
 
 }
 
-void buildLabelTable(FILE * lInfile, labelTable labels[]) {
+void buildLabelTable(FILE * lInfile) {
     char lLine[MAX_LINE_LENGTH + 1], *lLabel, *lOpcode, *lArg1,
             *lArg2, *lArg3, *lArg4;
 
     int lRet;
-    int originOffset;
-
+    int offset = 0;
+    int i =0;
     //lInfile = fopen( "data.in", "r" );	/* open the input file */
-
     do
     {
         lRet = readAndParse( lInfile, lLine, &lLabel,
                              &lOpcode, &lArg1, &lArg2, &lArg3, &lArg4 );
         if( lRet != DONE && lRet != EMPTY_LINE )
         {
-            if(lLabel!=0){
-
+            if(0!=strcmp(lLabel,"")){
+                strcpy(labels[i].label,lLabel);
+                labels[i].offset = offset;
+                labelTableLength++;
+                i++;
             }
         }
+        if(0==strcmp(".orig",lOpcode)){
+            offset = 0;
+        }
+        else{
+            offset+=2;
+        }
+        lLabel="";
+        lOpcode="";
+        lArg1="";
+        lArg1="";
+        lArg2="";
+        lArg3="";
+        lArg4="";
     } while( lRet != DONE );
 }
 
