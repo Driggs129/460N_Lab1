@@ -170,8 +170,11 @@ int decodeSR2(char* arg3, int numBits){
 	}
 }
 
-int	calcOffset(char* arg1, int numBits){
-
+int	calcOffset(char* arg1, int numBits, bool PC, bool shift){
+	int output = findLabel(arg1) - (CURRENT_LINE + 1);
+	int mask = pow(2.0, numBits) - 1;
+	output = output & mask;
+	return output;
 }
 
 int add(char* arg1, char* arg2, char* arg3){
@@ -190,35 +193,43 @@ int and(char* arg1, char* arg2, char* arg3){
 }
 int br(char* arg1){
 	int output = 0x0000;
-	output += 0x
+	output += 0x0000;
+	output += calcOffset(arg1, 9);
 }
 int brn(char* arg1){
 	int output = 0x0000;
-	output += 0x
+	output += 0x0800;
+	output += calcOffset(arg1, 9);
 }
 int brz(char* arg1){
 	int output = 0x0000;
-	output += 0x
+	output += 0x0400;
+	output += calcOffset(arg1, 9);
 }
 int brp(char* arg1){
 	int output = 0x0000;
-	output += 0x
+	output += 0x0200;
+	output += calcOffset(arg1, 9);
 }
 int brnz(char* arg1){
 	int output = 0x0000;
-	output += 0x
+	output += 0x0C00;
+	output += calcOffset(arg1, 9);
 }
 int brzp(char* arg1){
 	int output = 0x0000;
-	output += 0x
+	output += 0x0600;
+	output += calcOffset(arg1, 9);
 }
 int brnp(char* arg1){
 	int output = 0x0000;
-	output += 0x
+	output += 0x0A00;
+	output += calcOffset(arg1, 9);
 }
 int brnzp(char* arg1){
 	int output = 0x0000;
-	output += 0x
+	output += 0x0E00;
+	output += calcOffset(arg1, 9);
 }
 int halt(){
 	return trap("x25");
@@ -226,6 +237,7 @@ int halt(){
 int jmp(char* arg1){
 	int output = 0x0000;
 	output += 0xC000;
+	output += decodeSR1(arg1);
 }
 int jsr(char* arg1){
 	int output = 0x0000;
