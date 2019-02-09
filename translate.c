@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <math.h>
+
 
 #define dr_r0	0x0000
 #define dr_r1	0x0200
@@ -24,3 +27,274 @@
 #define sr2_r6	0x0006
 #define sr2_r7	0x0007
 
+int decodeDR(char* arg1){
+	if(arg1[0] != 'r' || arg1[2] != NULL){
+		exit(4);
+	}
+	else{
+		switch(arg1[1]){
+			case 0:
+				return dr_r0;
+				break;
+
+			case 1:
+				return dr_r1;
+				break;
+
+			case 2:
+				return dr_r2;
+				break;
+
+			case 3:
+				return dr_r3;
+				break;
+
+			case 4:
+				return dr_r4;
+				break;
+
+			case 5:
+				return dr_r5;
+				break;
+
+			case 6:
+				return dr_r6;
+				break;
+
+			case 7:
+				return dr_r7;
+				break;
+
+			default:
+				exit(4);
+		}
+	}
+}
+
+int decodeSR1(char* arg2){
+	if(arg2[0] != 'r' || arg2[2] != NULL){
+		exit(4);
+	}
+	else{
+		switch(arg2[1]){
+			case 0:
+				return sr1_r0;
+				break;
+
+			case 1:
+				return sr1_r1;
+				break;
+
+			case 2:
+				return sr1_r2;
+				break;
+
+			case 3:
+				return sr1_r3;
+				break;
+
+			case 4:
+				return sr1_r4;
+				break;
+
+			case 5:
+				return sr1_r5;
+				break;
+
+			case 6:
+				return sr1_r6;
+				break;
+
+			case 7:
+				return sr1_r7;
+				break;
+
+			default:
+				exit(4);
+		}
+	}
+}
+
+int decodeSR2(char* arg3, int numBits){
+	bool imm = false;
+	int output = 0;
+	int mask = 0;
+	if(arg3[0] != 'r' || arg3[2] != NULL){
+		output = toNum(arg3);
+		imm = true;
+		mask = pow(2.0, numBits) - 1;
+		output = output & mask;
+		if(imm == true && numBits == 5){
+			output += 0x0020;
+		}
+		return output;
+		exit(4);
+	}
+	else{
+		switch(arg3[1]){
+			case 0:
+				return sr2_r0;
+				break;
+
+			case 1:
+				return sr2_r1;
+				break;
+
+			case 2:
+				return sr2_r2;
+				break;
+
+			case 3:
+				return sr2_r3;
+				break;
+
+			case 4:
+				return sr2_r4;
+				break;
+
+			case 5:
+				return sr2_r5;
+				break;
+
+			case 6:
+				return sr2_r6;
+				break;
+
+			case 7:
+				return sr2_r7;
+				break;
+
+			default:
+				exit(4);
+		}
+	}
+}
+
+int	calcOffset(char* arg1, int numBits){
+
+}
+
+int add(char* arg1, char* arg2, char* arg3){
+	int output = 0x0000;
+	output += 0x1000;
+	output += decodeDR(arg1);
+	output += decodeSR1(arg2);
+	output += decodeSR2(arg3, 5);
+}
+int and(char* arg1, char* arg2, char* arg3){
+	int output = 0x0000;
+	output += 0x5000;
+	output += decodeDR(arg1);
+	output += decodeSR1(arg2);
+	output += decodeSR2(arg3, 5);
+}
+int br(char* arg1){
+	int output = 0x0000;
+	output += 0x
+}
+int brn(char* arg1){
+	int output = 0x0000;
+	output += 0x
+}
+int brz(char* arg1){
+	int output = 0x0000;
+	output += 0x
+}
+int brp(char* arg1){
+	int output = 0x0000;
+	output += 0x
+}
+int brnz(char* arg1){
+	int output = 0x0000;
+	output += 0x
+}
+int brzp(char* arg1){
+	int output = 0x0000;
+	output += 0x
+}
+int brnp(char* arg1){
+	int output = 0x0000;
+	output += 0x
+}
+int brnzp(char* arg1){
+	int output = 0x0000;
+	output += 0x
+}
+int halt(){
+	return trap("x25");
+}
+int jmp(char* arg1){
+	int output = 0x0000;
+	output += 0xC000;
+}
+int jsr(char* arg1){
+	int output = 0x0000;
+	output += 0x4000;
+}
+int jsrr(char* arg1){
+	int output = 0x0000;
+	output += 0x4000;
+}
+int ldb(char* arg1, char* arg2, char* arg3){
+	int output = 0x0000;
+	output += 0x2000;
+}
+int ldw(char* arg1, char* arg2, char* arg3){
+	int output = 0x0000;
+	output += 0x6000;
+}
+int lea(char* arg1, char* arg2){
+	int output = 0x0000;
+	output += 0xE000;
+}
+int nop(){
+	return 0x0000;
+}
+int not(char* arg1, char* arg2){
+	int output = 0x0000;
+	output += 0x9000;
+}
+int ret(){
+	return 0xC1C0;
+}
+int lshf(char* arg1, char* arg2, char* arg3){
+	int output = 0x0000;
+	output += 0xD000;
+}
+int rshfl(char* arg1, char* arg2, char* arg3){
+	int output = 0x0000;
+	output += 0xD000;
+}
+int rshfa(char* arg1, char* arg2, char* arg3){
+	int output = 0x0000;
+	output += 0xD000;
+}
+int rti(){
+	int output = 0x0000;
+	output += 0x8000;
+}
+int stb(char* arg1, char* arg2, char* arg3){
+	int output = 0x0000;
+	output += 0x3000;
+}
+int stw(char* arg1, char* arg2, char* arg3){
+	int output = 0x0000;
+	output += 0x7000;
+}
+int trap(char* arg1){
+	int output = 0x0000;
+	output += 0xF000;
+}
+int xor(char* arg1, char* arg2, char* arg3){
+	int output = 0x0000;
+	output += 0x9000;
+	output += decodeDR(arg1);
+	output += decodeSR1(arg2);
+	output += decodeSR2(arg3, 5);
+}
+int fill(char* arg1){
+
+}
+int orig(char* arg1){
+
+}
