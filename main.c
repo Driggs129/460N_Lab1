@@ -10,12 +10,22 @@
 FILE* infile = NULL;
 FILE* outfile = NULL;
 
+
 int labelTableLength = 0;
 typedef struct labelTable{
     int offset;
     char* label;
 } labelTable;
 labelTable labels[MAX_LINE_LENGTH];
+
+int findLabel(char *inputLabel) {
+    for (int i = 0; i < labelTableLength; i++) {
+        if (0 == strcmp(labels[i].label, inputLabel)) {
+            return labels[i].offset;
+        }
+    }
+    exit(1);
+}
 
 enum
 {
@@ -52,6 +62,10 @@ int main(int argc, char* argv[]) {
     for(int i =0;i<labelTableLength;i++){
         printf("Label is: %s with offset %x\n",labels[i].label,labels[i].offset);
     }
+    printf("%x",findLabel("a"));
+    printf("%x",findLabel("y"));
+    printf("%x",findLabel("zztop_theman"));
+    printf("%x",findLabel("ahiko"));
 
 
 
@@ -288,6 +302,36 @@ void buildLabelTable(FILE * lInfile) {
                 labelTableLength++;
                 i++;
             }
+        }
+        if(0==strcmp(".orig",lOpcode)){
+            offset = 0;
+        }
+        else{
+            offset+=1;
+        }
+        lLabel="";
+        lOpcode="";
+        lArg1="";
+        lArg1="";
+        lArg2="";
+        lArg3="";
+        lArg4="";
+    } while( lRet != DONE );
+}
+
+void assembleCode(FILE * lInfile){
+    char lLine[MAX_LINE_LENGTH + 1], *lLabel, *lOpcode, *lArg1,
+            *lArg2, *lArg3, *lArg4;
+
+    int lRet;
+    int offset = 0;
+    int i =0;
+    //lInfile = fopen( "data.in", "r" );	/* open the input file */
+    do {
+        lRet = readAndParse( lInfile, lLine, &lLabel,
+                             &lOpcode, &lArg1, &lArg2, &lArg3, &lArg4 );
+        if( lRet != DONE && lRet != EMPTY_LINE ) {
+            //dostuff
         }
         if(0==strcmp(".orig",lOpcode)){
             offset = 0;
