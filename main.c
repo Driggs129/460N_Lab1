@@ -3,6 +3,7 @@
 #include <string.h> /* String operations library */
 #include <ctype.h> /* Library for useful character operations */
 #include <limits.h> /* Library for definitions of common variable type characteristics */
+#include <stdbool.h>
 #include <math.h>
 
 
@@ -51,7 +52,8 @@ int findLabel(char *inputLabel) {
             return labels[i].offset;
         }
     }
-    exit(1);
+    //exit(1);
+    return 1;
 }
 
 enum
@@ -98,7 +100,10 @@ int xor(char* arg1, char* arg2, char* arg3);
 int fill(char* arg1);
 int orig(char* arg1);
 
-
+int decodeDR(char* arg1);
+int decodeSR1(char* arg2);
+int decodeSR2(char* arg3, int numBits);
+int calcOffset(char* arg1, int numBits);
 
 
 
@@ -124,11 +129,9 @@ int main(int argc, char* argv[]) {
     for(int i =0;i<labelTableLength;i++){
         printf("Label is: %s with offset %x\n",labels[i].label,labels[i].offset);
     }
-    printf("%x",findLabel("a"));
-    printf("%x",findLabel("y"));
-    printf("%x",findLabel("zztop_theman"));
-    printf("%x",findLabel("ahiko"));
-
+    fclose(infile);
+    infile = fopen(argv[1],"r");
+    assembleCode(infile, outfile);
 
     /* Do stuff with files */
 
@@ -497,7 +500,8 @@ void assembleCode(FILE * lInfile, FILE* lOutFile){
                     exit(4);
             }
             fprintf(lOutFile,"0x%x",outputLine);
-            
+            printf("0x%x\n",outputLine);
+
         }
         if(0==strcmp(".orig",lOpcode)){
             CURRENT_LINE = 0;
@@ -515,5 +519,347 @@ void assembleCode(FILE * lInfile, FILE* lOutFile){
     } while( lRet != DONE );
 }
 
+
+
+int decodeDR(char* arg1){
+    if(arg1[0] != 'r' || arg1[2] != '\0'){
+        exit(4);
+    }
+    else{
+        switch(arg1[1]){
+            case 0:
+                return dr_r0;
+                break;
+
+            case 1:
+                return dr_r1;
+                break;
+
+            case 2:
+                return dr_r2;
+                break;
+
+            case 3:
+                return dr_r3;
+                break;
+
+            case 4:
+                return dr_r4;
+                break;
+
+            case 5:
+                return dr_r5;
+                break;
+
+            case 6:
+                return dr_r6;
+                break;
+
+            case 7:
+                return dr_r7;
+                break;
+
+            default:
+                exit(4);
+        }
+    }
+}
+
+int decodeSR1(char* arg2){
+    if(arg2[0] != 'r' || arg2[2] != '\0'){
+        exit(4);
+    }
+    else{
+        switch(arg2[1]){
+            case 0:
+                return sr1_r0;
+                break;
+
+            case 1:
+                return sr1_r1;
+                break;
+
+            case 2:
+                return sr1_r2;
+                break;
+
+            case 3:
+                return sr1_r3;
+                break;
+
+            case 4:
+                return sr1_r4;
+                break;
+
+            case 5:
+                return sr1_r5;
+                break;
+
+            case 6:
+                return sr1_r6;
+                break;
+
+            case 7:
+                return sr1_r7;
+                break;
+
+            default:
+                exit(4);
+        }
+    }
+}
+
+int decodeSR2(char* arg3, int numBits){
+    bool imm = false;
+    int output = 0;
+    int mask = 0;
+    if(arg3[0] != 'r' || arg3[2] != '\0'){
+        output = toNum(arg3);
+        imm = true;
+        mask = pow(2.0, numBits) - 1;
+        output = output & mask;
+        if(imm == true && numBits == 5){
+            output += 0x0020;
+        }
+        return output;
+        exit(4);
+    }
+    else{
+        switch(arg3[1]){
+            case 0:
+                return sr2_r0;
+                break;
+
+            case 1:
+                return sr2_r1;
+                break;
+
+            case 2:
+                return sr2_r2;
+                break;
+
+            case 3:
+                return sr2_r3;
+                break;
+
+            case 4:
+                return sr2_r4;
+                break;
+
+            case 5:
+                return sr2_r5;
+                break;
+
+            case 6:
+                return sr2_r6;
+                break;
+
+            case 7:
+                return sr2_r7;
+                break;
+
+            default:
+                exit(4);
+        }
+    }
+}
+
+int	calcOffset(char* arg1, int numBits){
+    int output = findLabel(arg1) - (CURRENT_LINE + 1);
+    int mask = pow(2.0, numBits) - 1;
+    output = output & mask;
+    return output;
+}
+
+int add(char* arg1, char* arg2, char* arg3){
+    int output = 0x0000;
+    output += 0x1000;
+    output += decodeDR(arg1);
+    output += decodeSR1(arg2);
+    output += decodeSR2(arg3, 5);
+    return output;
+}
+int and(char* arg1, char* arg2, char* arg3){
+    int output = 0x0000;
+    output += 0x5000;
+    output += decodeDR(arg1);
+    output += decodeSR1(arg2);
+    output += decodeSR2(arg3, 5);
+    return output;
+}
+int br(char* arg1){
+    int output = 0x0000;
+    output += 0x0000;
+    output += calcOffset(arg1, 9);
+    return output;
+}
+int brn(char* arg1){
+    int output = 0x0000;
+    output += 0x0800;
+    output += calcOffset(arg1, 9);
+    return output;
+}
+int brz(char* arg1){
+    int output = 0x0000;
+    output += 0x0400;
+    output += calcOffset(arg1, 9);
+    return output;
+}
+int brp(char* arg1){
+    int output = 0x0000;
+    output += 0x0200;
+    output += calcOffset(arg1, 9);
+    return output;
+}
+int brnz(char* arg1){
+    int output = 0x0000;
+    output += 0x0C00;
+    output += calcOffset(arg1, 9);
+    return output;
+}
+int brzp(char* arg1){
+    int output = 0x0000;
+    output += 0x0600;
+    output += calcOffset(arg1, 9);
+    return output;
+}
+int brnp(char* arg1){
+    int output = 0x0000;
+    output += 0x0A00;
+    output += calcOffset(arg1, 9);
+    return output;
+}
+int brnzp(char* arg1){
+    int output = 0x0000;
+    output += 0x0E00;
+    output += calcOffset(arg1, 9);
+    return output;
+}
+int halt(){
+    return trap("x25");
+}
+int jmp(char* arg1){
+    int output = 0x0000;
+    output += 0xC000;
+    output += decodeSR1(arg1);
+    return output;
+}
+int jsr(char* arg1){
+    int output = 0x0000;
+    output += 0x4800;
+    output += calcOffset(arg1, 11);
+    return output;
+}
+int jsrr(char* arg1){
+    int output = 0x0000;
+    output += 0x4000;
+    output += decodeSR1(arg1);
+    return output;
+}
+int ldb(char* arg1, char* arg2, char* arg3){
+    int output = 0x0000;
+    output += 0x2000;
+    output += decodeDR(arg1);
+    output += decodeSR1(arg2);
+    output += decodeSR2(arg3, 6);
+    return output;
+}
+int ldw(char* arg1, char* arg2, char* arg3){
+    int output = 0x0000;
+    output += 0x6000;
+    output += decodeDR(arg1);
+    output += decodeSR1(arg2);
+    output += decodeSR2(arg3, 6);
+    return output;
+}
+int lea(char* arg1, char* arg2){
+    int output = 0x0000;
+    output += 0xE000;
+    output += decodeDR(arg1);
+    output += calcOffset(arg2, 9);
+    return output;
+}
+int nop(){
+    return 0x0000;
+}
+int not(char* arg1, char* arg2){
+    int output = 0x0000;
+    output += 0x903F;
+    output += decodeDR(arg1);
+    output += decodeSR1(arg2);
+    return output;
+}
+int ret(){
+    return 0xC1C0;
+}
+int lshf(char* arg1, char* arg2, char* arg3){
+    int output = 0x0000;
+    output += 0xD000;
+    output += decodeDR(arg1);
+    output += decodeSR1(arg2);
+    output += decodeSR2(arg3, 4);
+    return output;
+}
+int rshfl(char* arg1, char* arg2, char* arg3){
+    int output = 0x0000;
+    output += 0xD010;
+    output += decodeDR(arg1);
+    output += decodeSR1(arg2);
+    output += decodeSR2(arg3, 4);
+    return output;
+}
+int rshfa(char* arg1, char* arg2, char* arg3){
+    int output = 0x0000;
+    output += 0xD030;
+    output += decodeDR(arg1);
+    output += decodeSR1(arg2);
+    output += decodeSR2(arg3, 4);
+    return output;
+}
+int rti(){
+    int output = 0x0000;
+    output += 0x8000;
+    return output;
+}
+int stb(char* arg1, char* arg2, char* arg3){
+    int output = 0x0000;
+    output += 0x3000;
+    output += decodeDR(arg1);
+    output += decodeSR1(arg2);
+    output += decodeSR2(arg3, 6);
+    return output;
+}
+int stw(char* arg1, char* arg2, char* arg3){
+    int output = 0x0000;
+    output += 0x7000;
+    output += decodeDR(arg1);
+    output += decodeSR1(arg2);
+    output += decodeSR2(arg3, 6);
+    return output;
+}
+int trap(char* arg1){
+    int output = 0x0000;
+    output += 0xF000;
+    output += decodeSR2(arg1, 8);
+    return output;
+}
+int xor(char* arg1, char* arg2, char* arg3){
+    int output = 0x0000;
+    output += 0x9000;
+    output += decodeDR(arg1);
+    output += decodeSR1(arg2);
+    output += decodeSR2(arg3, 5);
+    return output;
+}
+int fill(char* arg1){
+    int output = 0x0000;
+    output += decodeSR2(arg1, 16);
+    return output;
+}
+int orig(char* arg1){
+    int output = 0x0000;
+    output += decodeSR2(arg1, 16);
+    return output;
+}
 
 /* Note: MAX_LINE_LENGTH, OK, EMPTY_LINE, and DONE are defined values */
