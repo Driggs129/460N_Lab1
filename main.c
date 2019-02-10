@@ -7,10 +7,8 @@
 #include <math.h>
 /*
  * LAB 1
- * CREATED BY DOUGLAS RIGGS and RAN TRAKHTENGERTS
- *
- *
- *
+ * CREATED BY DOUGLAS RIGGS (dwr726) and RAN TRAKHTENGERTS (rt24869)
+ * EE460N, SPRING 2019, PATT
  */
 
 
@@ -619,7 +617,7 @@ void assembleCode(FILE * lInfile, FILE* lOutFile){
                     exit(1);
             }
             fprintf(lOutFile,"0x%04X\n",outputLine);
-            printf("0x%04X\n",outputLine);
+            //printf("0x%04X\n",outputLine);
 
         }
         if(0==strcmp(".orig",lOpcode)){
