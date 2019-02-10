@@ -126,9 +126,6 @@ int main(int argc, char* argv[]) {
     }
     //labelTable labels[MAX_LINE_LENGTH] ;
     buildLabelTable(infile);
-    for(int i =0;i<labelTableLength;i++){
-        printf("Label is: %s with offset %x\n",labels[i].label,labels[i].offset);
-    }
     fclose(infile);
     infile = fopen(argv[1],"r");
     assembleCode(infile, outfile);
@@ -527,35 +524,35 @@ int decodeDR(char* arg1){
     }
     else{
         switch(arg1[1]){
-            case 0:
+            case '0':
                 return dr_r0;
                 break;
 
-            case 1:
+            case '1':
                 return dr_r1;
                 break;
 
-            case 2:
+            case '2':
                 return dr_r2;
                 break;
 
-            case 3:
+            case '3':
                 return dr_r3;
                 break;
 
-            case 4:
+            case '4':
                 return dr_r4;
                 break;
 
-            case 5:
+            case '5':
                 return dr_r5;
                 break;
 
-            case 6:
+            case '6':
                 return dr_r6;
                 break;
 
-            case 7:
+            case '7':
                 return dr_r7;
                 break;
 
@@ -571,35 +568,35 @@ int decodeSR1(char* arg2){
     }
     else{
         switch(arg2[1]){
-            case 0:
+            case '0':
                 return sr1_r0;
                 break;
 
-            case 1:
+            case '1':
                 return sr1_r1;
                 break;
 
-            case 2:
+            case '2':
                 return sr1_r2;
                 break;
 
-            case 3:
+            case '3':
                 return sr1_r3;
                 break;
 
-            case 4:
+            case '4':
                 return sr1_r4;
                 break;
 
-            case 5:
+            case '5':
                 return sr1_r5;
                 break;
 
-            case 6:
+            case '6':
                 return sr1_r6;
                 break;
 
-            case 7:
+            case '7':
                 return sr1_r7;
                 break;
 
@@ -626,35 +623,35 @@ int decodeSR2(char* arg3, int numBits){
     }
     else{
         switch(arg3[1]){
-            case 0:
+            case '0':
                 return sr2_r0;
                 break;
 
-            case 1:
+            case '1':
                 return sr2_r1;
                 break;
 
-            case 2:
+            case '2':
                 return sr2_r2;
                 break;
 
-            case 3:
+            case '3':
                 return sr2_r3;
                 break;
 
-            case 4:
+            case '4':
                 return sr2_r4;
                 break;
 
-            case 5:
+            case '5':
                 return sr2_r5;
                 break;
 
-            case 6:
+            case '6':
                 return sr2_r6;
                 break;
 
-            case 7:
+            case '7':
                 return sr2_r7;
                 break;
 
