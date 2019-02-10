@@ -8,7 +8,7 @@
 /*
  * LAB 1
  * CREATED BY DOUGLAS RIGGS and RAN TRAKHTENGERTS
- * 
+ *
  *
  *
  */
@@ -54,6 +54,50 @@ typedef struct labelTable{
     char* label;
 } labelTable;
 labelTable labels[MAX_LINE_LENGTH];
+
+int isInvalid(char *inputLabel){
+    if(0==strcmp(inputLabel,"r0")){
+        return 1;
+    }
+    if(0==strcmp(inputLabel,"r1")){
+        return 1;
+    }
+    if(0==strcmp(inputLabel,"r2")){
+        return 1;
+    }
+    if(0==strcmp(inputLabel,"r4")){
+        return 1;
+    }
+    if(0==strcmp(inputLabel,"r3")){
+        return 1;
+    }
+    if(0==strcmp(inputLabel,"r5")){
+        return 1;
+    }
+    if(0==strcmp(inputLabel,"r6")){
+        return 1;
+    }
+    if(0==strcmp(inputLabel,"r7")){
+        return 1;
+    }
+    if(0==strcmp(inputLabel,"in")){
+        return 1;
+    }
+    if(0==strcmp(inputLabel,"out")){
+        return 1;
+    }
+    if(0==strcmp(inputLabel,"getc")){
+        return 1;
+    }
+    if(0==strcmp(inputLabel,"puts")){
+        return 1;
+    }
+    if(inputLabel[0]=='x'){
+        return 1;
+    }
+
+    return 0;
+}
 
 int findLabel(char *inputLabel) {
     for (int i = 0; i < labelTableLength; i++) {
@@ -357,7 +401,7 @@ int readAndParse( FILE * pInfile, char * pLine, char ** pLabel, char
     if( !( lPtr = strtok( NULL, "\t\n ," ) ) ) return( OK );
 
     *pArg4 = lPtr;
-    printf("%s %s %s %s %s %s\n", pOpcode[0], pLabel[0], pArg1[0],pArg2[0],pArg3[0],pArg4[0]);
+    //printf("%s %s %s %s %s %s\n", pOpcode[0], pLabel[0], pArg1[0],pArg2[0],pArg3[0],pArg4[0]);
     return( OK );
 
 }
@@ -377,6 +421,12 @@ void buildLabelTable(FILE * lInfile) {
         if( lRet != DONE && lRet != EMPTY_LINE )
         {
             if(0!=strcmp(lLabel,"")){
+                if(isOpcode(lOpcode)==-1){
+                    exit(2);
+                }
+                if(isInvalid(lLabel)){
+                    exit(4);
+                }
                 strcpy(labels[i].label,lLabel);
                 labels[i].offset = offset;
                 labelTableLength++;
