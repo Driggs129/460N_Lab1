@@ -5,6 +5,15 @@
 #include <limits.h> /* Library for definitions of common variable type characteristics */
 #include <stdbool.h>
 #include <math.h>
+/*
+ * LAB 1
+ * CREATED BY DOUGLAS RIGGS and RAN TRAKHTENGERTS
+ * 
+ *
+ *
+ */
+
+
 
 
 #define dr_r0	0x0000
@@ -53,7 +62,7 @@ int findLabel(char *inputLabel) {
         }
     }
     exit(1);
-    return 1;
+    //return 1;
 }
 
 enum
@@ -404,98 +413,160 @@ void assembleCode(FILE * lInfile, FILE* lOutFile){
             switch(isOpcode(lOpcode)){
                 case 0:
                     outputLine= add(lArg1,lArg2,lArg3);
+                    if(0!=strcmp(lArg4,""))
+                        exit(4);
                     break;
                 case 1:
                     outputLine= and(lArg1,lArg2,lArg3);
+                    if(0!=strcmp(lArg4,""))
+                        exit(4);
                     break;
                 case 2:
                     outputLine= br(lArg1);
+                    if(0!=strcmp(lArg2,""))
+                        exit(4);
                     break;
                 case 3:
                     outputLine= brn(lArg1);
+                    if(0!=strcmp(lArg2,""))
+                        exit(4);
                     break;
                 case 4:
                     outputLine= brz(lArg1);
+                    if(0!=strcmp(lArg2,""))
+                        exit(4);
                     break;
                 case 5:
                     outputLine= brp(lArg1);
+                    if(0!=strcmp(lArg2,""))
+                        exit(4);
                     break;
                 case 6:
                     outputLine= brnz(lArg1);
+                    if(0!=strcmp(lArg2,""))
+                        exit(4);
                     break;
                 case 7:
                     outputLine= brnp(lArg1);
+                    if(0!=strcmp(lArg2,""))
+                        exit(4);
                     break;
                 case 8:
                     outputLine= brzp(lArg1);
+                    if(0!=strcmp(lArg2,""))
+                        exit(4);
                     break;
                 case 9:
                     outputLine= brnzp(lArg1);
+                    if(0!=strcmp(lArg2,""))
+                        exit(4);
                     break;
                 case 10:
                     outputLine= halt();
+                    if(0!=strcmp(lArg1,""))
+                        exit(4);
                     break;
                 case 11:
                     outputLine= jmp(lArg1);
+                    if(0!=strcmp(lArg2,""))
+                        exit(4);
                     break;
                 case 12:
                     outputLine= jsr(lArg1);
+                    if(0!=strcmp(lArg2,""))
+                        exit(4);
                     break;
                 case 13:
                     outputLine= jsrr(lArg1);
+                    if(0!=strcmp(lArg2,""))
+                        exit(4);
                     break;
                 case 14:
                     outputLine= ldb(lArg1,lArg2,lArg3);
+                    if(0!=strcmp(lArg4,""))
+                        exit(4);
                     break;
                 case 15:
                     outputLine= ldw(lArg1,lArg2,lArg3);
+                    if(0!=strcmp(lArg4,""))
+                        exit(4);
                     break;
                 case 16:
                     outputLine= lea(lArg1,lArg2);
+                    if(0!=strcmp(lArg3,""))
+                        exit(4);
                     break;
                 case 17:
                     outputLine= nop();
+                    if(0!=strcmp(lArg1,""))
+                        exit(4);
                     break;
                 case 18:
                     outputLine= not(lArg1,lArg2);
+                    if(0!=strcmp(lArg3,""))
+                        exit(4);
                     break;
                 case 19:
                     outputLine= ret();
+                    if(0!=strcmp(lArg1,""))
+                        exit(4);
                     break;
                 case 20:
                     outputLine= lshf(lArg1,lArg2,lArg3);
+                    if(0!=strcmp(lArg4,""))
+                        exit(4);
                     break;
                 case 21:
                     outputLine= rshfl(lArg1,lArg2,lArg3);
+                    if(0!=strcmp(lArg4,""))
+                        exit(4);
                     break;
                 case 22:
                     outputLine= rshfa(lArg1,lArg2,lArg3);
+                    if(0!=strcmp(lArg4,""))
+                        exit(4);
                     break;
                 case 23:
                     outputLine= rti();
+                    if(0!=strcmp(lArg1,""))
+                        exit(4);
                     break;
                 case 24:
                     outputLine= stb(lArg1,lArg2,lArg3);
+                    if(0!=strcmp(lArg4,""))
+                        exit(4);
                     break;
                 case 25:
                     outputLine= stw(lArg1,lArg2,lArg3);
+                    if(0!=strcmp(lArg4,""))
+                        exit(4);
                     break;
                 case 26:
                     outputLine= trap(lArg1);
+                    if(0!=strcmp(lArg2,""))
+                        exit(4);
                     break;
                 case 27:
                     outputLine= xor(lArg1,lArg2,lArg3);
+                    if(0!=strcmp(lArg4,""))
+                        exit(4);
                     break;
                 case 28:
                     outputLine= orig(lArg1);
+                    if(0!=strcmp(lArg2,""))
+                        exit(4);
                     break;
                 case 29:
+                    if(0!=strcmp(lArg1,""))
+                        exit(4);
                     exit(0);
                 case 30:
                     outputLine= fill(lArg1);
+                    if(0!=strcmp(lArg2,""))
+                        exit(4);
                     break;
                 default:
-                    exit(4);
+                    exit(1);
             }
             fprintf(lOutFile,"0x%04X\n",outputLine);
             printf("0x%04X\n",outputLine);
@@ -518,7 +589,33 @@ void assembleCode(FILE * lInfile, FILE* lOutFile){
 }
 
 
-
+int checkBounds(int number, int bits){
+    if(bits ==4){
+        if(number>15||number<0){
+            exit(3);
+        }
+    }
+    if(bits ==5){
+        if(number>15||number<-16){
+            exit(3);
+        }
+    }
+    if(bits == 6){
+        if(number>31||number<-32){
+            exit(3);
+        }
+    }
+    if(bits == 9){
+        if(number>255||number<-256){
+            exit(3);
+        }
+    }
+    if(bits == 11){
+        if(number>1023||number<-1024){
+            exit(3);
+        }
+    }
+}
 int decodeDR(char* arg1){
     if(arg1[0] != 'r' || arg1[2] != '\0'){
         exit(4);
@@ -613,6 +710,7 @@ int decodeSR2(char* arg3, int numBits){
     int mask = 0;
     if(arg3[0] != 'r' || arg3[2] != '\0'){
         output = toNum(arg3);
+        checkBounds(output,numBits);
         imm = true;
         mask = pow(2.0, numBits) - 1;
         output = output & mask;
@@ -664,6 +762,7 @@ int decodeSR2(char* arg3, int numBits){
 
 int	calcOffset(char* arg1, int numBits){
     int output = findLabel(arg1) - (CURRENT_LINE + 1);
+    checkBounds(output,numBits);
     int mask = pow(2.0, numBits) - 1;
     output = output & mask;
     return output;
